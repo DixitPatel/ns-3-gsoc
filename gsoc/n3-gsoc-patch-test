@@ -24,7 +24,8 @@ diff -r b3e6d121f1c7 scratch/testapp-sim.cc
 +  myNode->AddApplication(testPtr);
 +  UdpEchoServerHelper echoServer (9);
 +  ApplicationContainer myApps = echoServer.Install(nodes.Get(0));
-+
++  myApps.Start(Seconds(1.0)); 
++  myApps.Stop(Seconds(2.0));
 +  Simulator::Run ();
 +  Simulator::Destroy ();
 +  return 0;

@@ -2,10 +2,12 @@ diff -r b3e6d121f1c7 scratch/testapp-sim.cc
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
 +++ b/scratch/testapp-sim.cc	Mon Mar 18 11:26:57 2013 +0100
 @@ -0,0 +1,27 @@
++#include"ns3/log.h"
 +#include "ns3/core-module.h"
 +#include "ns3/network-module.h"
 +#include "ns3/applications-module.h"
-+
++#include "testapp.h"
++#include "ns3/application-container.h"
 +using namespace ns3;
 +
 +NS_LOG_COMPONENT_DEFINE ("TestExample");
@@ -13,16 +15,17 @@ diff -r b3e6d121f1c7 scratch/testapp-sim.cc
 +int
 +main (int argc, char *argv[])
 +{
++  LogComponentEnable ("TestApplication", LOG_LEVEL_INFO);
++  TestApplication testApp;
++  Ptr<TestApplication> testPtr = &testApp;  
 +  NodeContainer nodes;
-+  nodes.Create (1);
-+   
++  nodes.Create(1);
 +  Ptr<Node> myNode = nodes.Get(0);
-+  
-+  TestApplication testapp;
-+  testapp.SetNode(myNode);
-+  testapp.SetStartTime(Seconds(1.0));
-+  testapp.SetStopTime(Seconds(2.0));
-+
++  myNode->AddApplication(testPtr);
++  UdpEchoServerHelper echoServer (9);
++  ApplicationContainer myApps = echoServer.Install(nodes.Get(0));
++  myApps.Start(Seconds(1.0)); 
++  myApps.Stop(Seconds(1.0));
 +  Simulator::Run ();
 +  Simulator::Destroy ();
 +  return 0;
